@@ -105,7 +105,7 @@ To enable this feature, please add a new config option "uploader", and follow th
   "cameras": [
     {
       "name": "Camera Name",
-      "uploader": true,
+      "uploader": "gdrive",
       "videoConfig": {
       	"source": "-re -i rtsp://myfancy_rtsp_stream",
         "stillImageSource": "-i http://faster_still_image_grab_url/this_is_optional.jpg",
@@ -120,7 +120,7 @@ To enable this feature, please add a new config option "uploader", and follow th
 }
 ```
 
-If the option is missing, it defaults to false, and does not enable the uploader.
+If the option is missing, it defaults to none, and does not enable the uploader.
 
 * For the setup of Google Drive, please follow the Google Drive Quickstart for Node.js instructions from here except for these changes.
 
@@ -129,6 +129,46 @@ https://developers.google.com/drive/v3/web/quickstart/nodejs
 * In Step 1-h the working directory should be the .homebridge directory
 * Skip Step 2 and 3
 * And in step 4, use the quickstart.js included in the plugin itself.  And to do this you need to run the command from the plugin directory.  Then just follow steps a to c
+
+## Uploading to Samba share of Still Images ( Snapshots )
+
+This is an optional feature that will automatically store every snapshot taken to a Samba share as a photo.  This is similar to the Google Drive storage but stores
+images on a Samba share on the local network.
+
+The snapshots are stored in a folder called "Camera Pictures", and are named with camera name, date and time of the image.
+
+To enable this feature, please add a new config option "uploader", and follow the steps below.
+
+* Add the option "uploader" to your config.json i.e.
+
+```
+{
+  "platform": "Camera-ffmpeg",
+  "cameras": [
+    {
+      "name": "Camera Name",
+      "uploader": "samba",
+      "smbConfig": {
+      	"share": "\\\\server\\share",
+        "domain": "DOMAIN",
+      	"username": "username",
+      	"password": "password"
+      },
+      "videoConfig": {
+      	"source": "-re -i rtsp://myfancy_rtsp_stream",
+        "stillImageSource": "-i http://faster_still_image_grab_url/this_is_optional.jpg",
+      	"maxStreams": 2,
+      	"maxWidth": 1280,
+      	"maxHeight": 720,
+      	"maxFPS": 30,
+      	"vcodec": "h264_omx"            
+      }
+    }
+  ]
+}
+```
+
+
 
 ## Tested configurations
 

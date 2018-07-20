@@ -5,7 +5,8 @@ var crypto = require('crypto');
 var fs = require('fs');
 var ip = require('ip');
 var spawn = require('child_process').spawn;
-var drive = require('./drive').drive;
+var gdrive = require('./drive').drive;
+var smbdrive = require('./smbdrive').drive;
 
 module.exports = {
   FFMPEG: FFMPEG
@@ -43,9 +44,14 @@ function FFMPEG(hap, cameraConfig, log, videoProcessor) {
   this.pendingSessions = {};
   this.ongoingSessions = {};
 
-  this.uploader = cameraConfig.uploader || false;
-  if ( this.uploader )
-    { this.drive = new drive(); }
+  this.uploader = cameraConfig.uploader || "none";
+  if ( this.uploader === 'gdrive' ) { 
+    this.drive = new gdrive(); 
+  }
+  else if ( this.uploader === 'samba' ) { 
+    var smbOpt = cameraConfig.smbConfig;
+    this.drive = new smbdrive(smbOpt.share, smbOpt.domain, smbOpt.username, smbOpt.password); 
+  }
 
   var numberOfStreams = ffmpegOpt.maxStreams || 2;
   var videoResolutions = [];
